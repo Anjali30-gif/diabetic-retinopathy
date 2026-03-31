@@ -1,0 +1,12 @@
+[project]
+name = "dr-detect-ai"
+version = "1.0.0"
+dependencies = [
+    "flask",
+    "flask-cors",
+    "mongoengine",
+    "tensorflow",
+    "numpy",
+    "opencv-python"
+]
+

@@ -1,0 +1,17 @@
+flask
+flask-cors
+flask-bcrypt
+flask-jwt_extended
+flask-socketio
+mongoengine
+tensorflow-directml==2.15.0
+numpy
+opencv-python
+python-dotenv
+tf-keras-vis
+lime
+scipy
+h5py
+Pillow
+mongomock
+scikit-learn

@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #0A2540;
+    color: #ffffff;
+    font-family: 'Inter', system-ui, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}
+
+.anti-gravity-card {
+  background: rgba(10, 37, 64, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 123, 255, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.1);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.anti-gravity-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 25px rgba(0, 123, 255, 0.3);
+  border-color: rgba(0, 123, 255, 0.8);
+}
+
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(1deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+.nebula-bg {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 30%, rgba(138,43,226, 0.12) 0%, transparent 40%),
+              radial-gradient(circle at 70% 60%, rgba(0,123,255, 0.12) 0%, transparent 40%);
+  animation: drift 20s linear infinite alternate;
+  pointer-events: none;
+  z-index: -10;
+}
+
+@keyframes drift {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-3%, -3%) scale(1.05); }
+}
+
+.edge-glow {
+  box-shadow: 0 0 10px #007BFF;
+}
+
+.badge-green { background-color: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); }
+.badge-red { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); }
+.badge-orange { background-color: rgba(249, 115, 22, 0.2); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.4); }
+
+.orbiting-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #007BFF;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #007BFF, 0 0 20px #007BFF;
+  animation: orbit 15s linear infinite;
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(100px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(100px) rotate(-360deg); }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: rgba(10,37,64,0.5); }
+::-webkit-scrollbar-thumb { background: rgba(0,123,255,0.5); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,123,255,0.8); }
