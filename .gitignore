@@ -35,9 +35,9 @@ train_env/
 .idea/
 
 # Dataset and Models
-dataset/
-models/*.h5
-models/*.json
+# dataset/ (removed from ignore)
+# models/*.h5 (removed from ignore)
+# models/*.json (removed from ignore)
 instance/
 
 # OS
