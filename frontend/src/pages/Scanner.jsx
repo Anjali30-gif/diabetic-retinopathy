@@ -37,12 +37,16 @@ const Scanner = () => {
     setProgress(0);
     
     // Smooth progress simulation while waiting for API
+    let currentProgress = 0;
     const progressInterval = setInterval(() => {
       setProgress(prev => {
-        if (prev >= 90) return prev;
-        return prev + 1;
+        currentProgress = prev;
+        if (prev >= 60 && prev < 85) return prev + 0.8; // Faster slow down
+        if (prev >= 85 && prev < 99) return prev + 0.2; // FASTER crawl
+        if (prev >= 99) return prev;
+        return prev + 2; // Rapid start
       });
-    }, 100);
+    }, 50); // Higher frequency (20fps) for smoother visuals
 
     try {
       const formData = new FormData();
@@ -64,7 +68,16 @@ const Scanner = () => {
         body: formData
       });
 
-      if (!response.ok) throw new Error('Inference failed');
+      if (!response.ok) {
+        let errorMsg = 'Inference failed';
+        try {
+          const errorData = await response.json();
+          errorMsg = errorData.error || errorData.msg || errorMsg; // msg is common in JWT errors
+        } catch (e) {
+          errorMsg = `Server error (${response.status})`;
+        }
+        throw new Error(errorMsg);
+      }
       
       const data = await response.json();
       
@@ -83,9 +96,20 @@ const Scanner = () => {
         setState('RESULT');
       }, 500);
     } catch (error) {
-      console.error(error);
+      console.error("SCAN_ERROR:", error);
       clearInterval(progressInterval);
-      alert("Inference Failed: " + error.message + "\nPlease ensure the backend is running and the image is valid.");
+      
+      const isAuthError = error.message.toLowerCase().includes('token') || 
+                          error.message.includes('401') || 
+                          error.message.includes('422') ||
+                          error.message.toLowerCase().includes('signature');
+
+      let displayMessage = `Scan Failed: ${error.message}`;
+      if (isAuthError) {
+        displayMessage = "Session Expired or Invalid User. Please log out and sign in again (all local sessions were reset during the server update).";
+      }
+
+      alert(displayMessage);
       reset();
     }
   };

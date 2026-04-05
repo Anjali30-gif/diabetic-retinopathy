@@ -53,6 +53,17 @@ else:
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'anti_gravity_real_world_secret')
 print(f"JWT Configuration initialized with secret: {'SET' if os.getenv('JWT_SECRET_KEY') else 'DEFAULT'}")
 jwt = JWTManager(app)
+@jwt.expired_token_loader
+def expired_token_callback(jwt_header, jwt_payload):
+    return jsonify({"error": "Session expired", "msg": "Please login again"}), 401
+
+@jwt.invalid_token_loader
+def invalid_token_callback(error):
+    return jsonify({"error": "Invalid token", "msg": "Session corrupted, please relogin"}), 422
+
+@jwt.unauthorized_loader
+def missing_token_callback(error):
+    return jsonify({"error": "Auth missing", "msg": "Authentication token required"}), 401
 
 
 app.register_blueprint(auth_bp, url_prefix='/api')
@@ -77,11 +88,14 @@ def get_model():
         if os.path.exists(MODEL_SAVE_PATH):
             try:
                 from tensorflow.keras.models import load_model
-                print(f"Loading hybrid model from {MODEL_SAVE_PATH}")
+                print(f"--- MODEL SYSTEM: Initializing load from {MODEL_SAVE_PATH} ---")
+                start_time = time.time()
                 _model = load_model(MODEL_SAVE_PATH, compile=False)
+                duration = time.time() - start_time
+                print(f"--- MODEL SYSTEM: Successfully loaded in {duration:.2f}s ---")
                 return _model
             except Exception as e:
-                print(f"Error loading model: {e}")
+                print(f"--- MODEL SYSTEM ERROR: Failed to load: {e} ---")
                 return None
         return None
     return _model
@@ -386,4 +400,7 @@ def handle_patient_checkin(data):
     socketio.emit('patient_checkin', data)
 
 if __name__ == '__main__':
+    # Pre-load the model so the first scan is fast
+    print("--- SERVER STARTUP: Pre-loading Hybrid Engine... ---")
+    get_model() 
     socketio.run(app, debug=True, port=5000)
