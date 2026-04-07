@@ -39,20 +39,40 @@ This document provides instructions to deploy the Diabetic Retinopathy Detection
 
 ## Backend Deployment Options
 
-### Option 1: Railway (Recommended - Easiest)
+### Option 1: Render (Free-friendly and easy)
+
+Render is a good choice because it supports Python web services, runs from GitHub, and has a free tier.
+
+**Steps:**
+1. Sign up at https://render.com
+2. Create a new Web Service
+3. Connect to your GitHub repository
+4. Set the branch to `master` or `main`
+5. Configure these values:
+   - **Environment**: Python
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `gunicorn -w 1 -k eventlet -b 0.0.0.0:$PORT app.main:app`
+6. Add environment variables:
+   ```bash
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET_KEY=your_secret_key
+   ```
+7. Deploy and wait for the service to become live
+
+### Option 2: Railway
 
 **Steps:**
 1. Sign up at https://railway.app
 2. Create new project → Import from GitHub
 3. Select your diabetic-retinopathy repository
 4. Set environment variables:
-   ```
+   ```bash
    MONGODB_URI=your_mongodb_connection_string
    JWT_SECRET_KEY=your_secret_key
    ```
-5. Railway automatically detects Procfile and deploys
+5. Railway automatically detects the Procfile and deploys
 
-### Option 2: Heroku
+### Option 3: Heroku
 
 **Prerequisites:**
 - Heroku CLI installed
@@ -77,12 +97,12 @@ git push heroku master
 heroku logs --tail
 ```
 
-### Option 3: PythonAnywhere
+### Option 4: PythonAnywhere
 
 1. Sign up at https://www.pythonanywhere.com
 2. Create new web app (choose Python 3.11)
 3. Clone repository into `/home/username/mysite`
-4. Configure WSGI file to use Flask app
+4. Configure WSGI file to use `app.main:app`
 5. Set environment variables in Web app settings
 
 ## Environment Configuration
@@ -95,14 +115,24 @@ JWT_SECRET_KEY=your_secret_key_here
 FLASK_ENV=production
 ```
 
-## Model Loading Issue Resolution
+For frontend builds, use `frontend/.env.example` as a template and set:
 
-The current model file (`best_dr_model.h5`) has compatibility issues with TensorFlow 2.15. 
+```
+VITE_API_URL=https://your-backend-url.onrender.com
+VITE_DEMO_MODE=false
+```
 
-**Solutions:**
-1. **Quick Fix (Current)**: App runs in mock mode with deterministic predictions
-2. **Proper Fix**: Retrain model with TensorFlow 2.15+
-3. **Alternative**: Use ONNX model format for better portability
+## Backend Production Notes
+
+The backend is now configured for cloud deployment:
+- `requirements.txt` uses `tensorflow-cpu==2.15.0` instead of Windows-only `tensorflow-directml`
+- `eventlet` is installed so `gunicorn` can run Flask-SocketIO correctly
+- `Procfile` uses:
+  ```bash
+  web: gunicorn -w 1 -k eventlet -b 0.0.0.0:$PORT app.main:app
+  ```
+
+If you deploy to Render or another host, the app should start cleanly with these settings.
 
 ## Testing Deployment
 
