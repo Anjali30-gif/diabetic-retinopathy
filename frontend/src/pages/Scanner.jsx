@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_BASE from '../config';
 
 const SEVERITY_DATA = {
   'No DR': { color: '#10b981', level: 0, risk: '0-5%', recommendation: 'Annual routine screening advised.' },
@@ -60,7 +61,7 @@ const Scanner = () => {
       // formData.append('mock', 'false'); 
 
       const token = localStorage.getItem('auth_token');
-      const response = await fetch('http://127.0.0.1:5000/predict', {
+      const response = await fetch(`${API_BASE}/predict`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`

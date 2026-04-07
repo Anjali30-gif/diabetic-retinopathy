@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import DashboardLayout from '../components/DashboardLayout';
+import API_BASE from '../config';
 // import removed to bypass NPM
 
 const PatientDashboard = () => {
@@ -32,7 +33,7 @@ const PatientDashboard = () => {
     const fetchRecords = async () => {
       try {
         const token = localStorage.getItem('auth_token');
-        const res = await fetch('http://127.0.0.1:5000/api/patients/records', {
+        const res = await fetch(`${API_BASE}/api/patients/records`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 

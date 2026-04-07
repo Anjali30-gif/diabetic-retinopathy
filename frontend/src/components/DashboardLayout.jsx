@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import API_BASE from '../config';
 // import removed to bypass NPM
 
 const DashboardLayout = ({ role, children, sidebarItems }) => {
@@ -19,7 +20,7 @@ const DashboardLayout = ({ role, children, sidebarItems }) => {
   const [modelStatus, setModelStatus] = useState(null);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/api/model-status')
+    fetch(`${API_BASE}/api/model-status`)
       .then(r => r.json())
       .then(data => setModelStatus(data))
       .catch(() => setModelStatus(null));

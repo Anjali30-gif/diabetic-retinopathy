@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import DashboardLayout from '../components/DashboardLayout';
 import Scanner from './Scanner';
+import API_BASE from '../config';
 // import removed to bypass NPM
 
 const AdminDashboard = () => {
@@ -81,8 +82,8 @@ const AdminDashboard = () => {
       try {
         const token = localStorage.getItem('auth_token');
         const [recordsRes, usersRes] = await Promise.all([
-          fetch('http://127.0.0.1:5000/api/records', { headers: { 'Authorization': `Bearer ${token}` } }),
-          fetch('http://127.0.0.1:5000/api/users', { headers: { 'Authorization': `Bearer ${token}` } })
+          fetch(`${API_BASE}/api/records`, { headers: { 'Authorization': `Bearer ${token}` } }),
+          fetch(`${API_BASE}/api/users`, { headers: { 'Authorization': `Bearer ${token}` } })
         ]);
         
         if (recordsRes.status === 401 || usersRes.status === 401) {

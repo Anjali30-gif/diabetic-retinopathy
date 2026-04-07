@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
+import API_BASE from '../config';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('auth_token');
-        const res = await fetch('http://127.0.0.1:5000/api/profile', {
+        const res = await fetch(`${API_BASE}/api/profile`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -66,7 +67,7 @@ const Profile = () => {
     setSaveStatus('saving');
     try {
       const token = localStorage.getItem('auth_token');
-      const res = await fetch('http://127.0.0.1:5000/api/profile', {
+      const res = await fetch(`${API_BASE}/api/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
