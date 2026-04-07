@@ -21,7 +21,7 @@ const PatientDashboard = () => {
   useEffect(() => {
     let user;
     try { user = JSON.parse(localStorage.getItem('user_info')); } catch(e) {}
-    socketRef.current = io('http://127.0.0.1:5000');
+    socketRef.current = io(API_BASE);
     if (socketRef.current) {
       socketRef.current.on('new_scan', (data) => {
         if (user && data.patient_user_id && String(data.patient_user_id) === String(user.id)) {

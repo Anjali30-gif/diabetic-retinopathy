@@ -27,7 +27,7 @@ const DoctorDashboard = () => {
   useEffect(() => {
     let user;
     try { user = JSON.parse(localStorage.getItem('user_info')); } catch(e) {}
-    const socket = io('http://127.0.0.1:5000');
+    const socket = io(API_BASE);
     if (socket) {
       socket.on('new_scan', (data) => {
         if (user && String(data.doctor_user_id) === String(user.id)) {
