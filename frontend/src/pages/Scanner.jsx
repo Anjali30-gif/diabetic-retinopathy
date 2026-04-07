@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import API_BASE from '../config';
+import API_BASE, { DEMO_MODE } from '../config';
 
 const SEVERITY_DATA = {
   'No DR': { color: '#10b981', level: 0, risk: '0-5%', recommendation: 'Annual routine screening advised.' },
@@ -9,7 +9,8 @@ const SEVERITY_DATA = {
   'Proliferative': { color: '#7f1d1d', level: 100, risk: '>90%', recommendation: 'Immediate clinical intervention required to prevent vision loss.' }
 };
 
-const Scanner = () => {
+const Scanner = ({ demoMode }) => {
+  const isDemoMode = demoMode || DEMO_MODE;
 
   const [state, setState] = useState('IDLE'); // IDLE, SCANNING, RESULT
   const [file, setFile] = useState(null);
@@ -50,6 +51,24 @@ const Scanner = () => {
     }, 50); // Higher frequency (20fps) for smoother visuals
 
     try {
+      if (isDemoMode) {
+        const data = await generateMockResult(fileArg);
+        clearInterval(progressInterval);
+        setProgress(100);
+        setTimeout(() => {
+          setResult({
+            severity: data.label,
+            confidence: data.confidence,
+            level: data.level,
+            patientId: data.patientId,
+            date: data.date,
+            original_url: data.original_url
+          });
+          setState('RESULT');
+        }, 500);
+        return;
+      }
+
       const formData = new FormData();
       formData.append('retinal_image', fileArg);
       formData.append('patient_name', patientData.name);
@@ -117,6 +136,44 @@ const Scanner = () => {
 
   const generateReport = () => {
     window.print();
+  };
+
+  const hashFile = async (fileObj) => {
+    const buffer = await fileObj.arrayBuffer();
+    const data = new Uint8Array(buffer);
+    let hash = 0;
+    for (let i = 0; i < Math.min(data.length, 256); i += 1) {
+      hash = (hash * 1315423911) ^ data[i];
+    }
+    return Math.abs(hash);
+  };
+
+  const getMockPrediction = async (fileObj) => {
+    const hash = await hashFile(fileObj);
+    const labels = ['No DR', 'Mild', 'Moderate', 'Severe', 'Proliferative'];
+    const index = hash % labels.length;
+    const confidence = (80 + (hash % 20)) + (hash % 10) / 100;
+    const date = new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+    return {
+      label: labels[index],
+      confidence: `${confidence.toFixed(1)}`,
+      level: [0, 25, 50, 75, 100][index],
+      patientId: `DX-${10000 + (hash % 90000)}`,
+      date,
+      original_url: preview || ''
+    };
+  };
+
+  const generateMockResult = async (fileArg) => {
+    const data = await getMockPrediction(fileArg);
+    return {
+      label: data.label,
+      confidence: data.confidence,
+      level: data.level,
+      patientId: data.patientId,
+      date: data.date,
+      original_url: data.original_url
+    };
   };
 
   const reset = () => {

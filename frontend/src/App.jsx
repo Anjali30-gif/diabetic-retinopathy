@@ -6,6 +6,7 @@ import DoctorDashboard from './pages/DoctorDashboard';
 import PatientDashboard from './pages/PatientDashboard';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
+import Demo from './pages/Demo';
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('auth_token');
@@ -31,6 +32,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/demo" element={<Demo />} />
           <Route path="/register" element={<Register />} />
           <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
           <Route path="/doctor" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />

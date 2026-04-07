@@ -102,8 +102,11 @@ const Login = () => {
           </button>
         </form>
 
-        <div className="text-center mt-6">
+        <div className="text-center mt-6 flex flex-col gap-3">
           <button onClick={() => navigate('/register')} className="text-xs text-blue-400 hover:text-blue-300 font-medium">New User? Create an Account</button>
+          <button onClick={() => navigate('/demo')} className="text-xs uppercase tracking-[0.25em] text-white bg-blue-500/15 border border-blue-500/30 rounded-full px-4 py-3 hover:bg-blue-500/25 transition font-bold">
+            Try Demo Mode
+          </button>
         </div>
       </div>
 
