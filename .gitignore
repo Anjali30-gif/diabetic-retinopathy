@@ -35,10 +35,13 @@ train_env/
 .idea/
 
 # Dataset and Models
-# dataset/ (removed from ignore)
-# models/*.h5 (removed from ignore)
-# models/*.json (removed from ignore)
+dataset/
+models/*.h5
+models/*.json
 instance/
+
+# Frontend build artifacts
+frontend/vite.config.js.timestamp-*
 
 # OS
 .DS_Store
