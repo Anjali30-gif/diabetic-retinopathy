@@ -8,9 +8,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        target: 'http://localhost:5001',
+        changeOrigin: true
+      },
+      '/predict': {
+        target: 'http://localhost:5001',
+        changeOrigin: true
       }
     }
   }
